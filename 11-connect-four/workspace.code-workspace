@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "Springboard-Projects",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "11-connect-four"
+	}
+}
