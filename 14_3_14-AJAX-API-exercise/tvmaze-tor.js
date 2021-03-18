@@ -63,26 +63,31 @@ function populateShows(shows) {
   episodeButtons.splice(0, episodeButtons.length);
 
   for (let show of shows) {
-    const episodesId = `${show.id}-episodes-area`;
-    const episodesListId = `${show.id}-episodes-list`;
-    let $item = $(
-      `<div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
-         <div class="card" data-show-id="${show.id}">
-           <div class="card-body">
-           <img class="card-img-top" src=${show.image} alt="Card image cap">
-             <h5 class="card-title">${show.name}</h5>
-             <p class="card-text">${show.summary}</p>
-             <button class="cart-text btn btn-block btn-secondary episode-buttons" id="${show.id}">see episode list</button>
-             <section style="display: none" id="${episodesId}">
-             <h2>Episodes</h2> 
-             <ul id="${episodesListId}">
-             </ul>
-           </section>  
-       
-
-           </div>
-         </div>
-       </div>
+    const episodesId = `${show.id}-episodes-div`;
+    const episodesUlId = `${show.id}-episodes-list`;
+    let $item = $(`
+      <div class="row">
+        <div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
+          <div class="card" data-show-id="${show.id}">
+            <div class="card-body">
+              <img class="card-img-top" src=${show.image} alt="Card image cap">
+                <h5 class="card-title">${show.name}</h5>
+                <p class="card-text">${show.summary}</p>
+                <button class="cart-text btn btn-block btn-secondary episode-buttons" id="${show.id}">see episode list</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-lg-3" style="display: none" id="${episodesId}">
+          <div class="card" data-show-id="">
+            <div class="card-body">
+              <h5 class="card-title">Episodes</h5> 
+              <ul class="card-text" id="${episodesUlId}">
+              </ul>
+            </div>
+          </div>
+        </div>       
       `);
     $showsList.append($item);
     episodeButtons.unshift(document.getElementById(show.id));
@@ -129,14 +134,20 @@ function displayShowError(err) {
  async function getEpisodes(id) {
   try {
     const episodesResponse = await axios.get (`http://api.tvmaze.com/shows/${id}/episodes`);
-    return {
-            id: showResponse.data[0].show.id,
-            name: showResponse.data[0].show.name,
-            summary: showResponse.data[0].show.summary,
-            image
-        };
+    const episodesOutput = [];
+    for (let episode of episodesResponse.data) {
+      const id = episode.id;
+      const name = episode.name;
+      const season = episode.season;
+      const number = episode.number;
+      episodesOutput.unshift({
+        id, name, season, number
+      });
+    }
+    episodes.Output.unshift(id);
+    return episodesOutput;
 } catch (err) {
-    displayShowError(err);
+    displayEpisodeError(err);
     return `error ${err}`;
 }
 // TODO: get episodes from tvmaze
@@ -147,6 +158,25 @@ function displayShowError(err) {
 }
 
 function displayEpisodes(episodes) {
+  try {
+    (populateShows(shows));
+    // console.log(episodes);
+    const showUlId = `${episodes[0]}-episodes-list`;
+    const episodesUl = document.getElementById(showUlId);
+    episodes.slice(0,1);
+    for (let episode of episodes) {
+      episodesUl.innerHTML += `
+        <li ID="${episode.id}">${episode.name} (season ${episode.season}, number ${episode.number})</li>
+      `;
+    }
+    episodesUl.classList.remove(Hide);
+    episodesUl.classList.add(Show);
+  } catch (err) {
+    return `episode display error ${err}`;
+  }
+}
+
+function displayEpisodeError(err) {
 
 }
 
@@ -159,7 +189,7 @@ $("#search-form").on("submit", async function handleSearch (evt) {
   let query = $("#search-query").val();
   if (!query) return;
 
-  $("#episodes-area").hide();
+  // $("#episodes-area").hide();
 
 // TODO: error messages still aren't working, but at least I've got it to display the show and not hide everything when there's an error
   shows.unshift(await searchShows(query));
@@ -170,13 +200,15 @@ $("#search-form").on("submit", async function handleSearch (evt) {
 
   if (episodeButtons.length > 0) {
     for (let button of episodeButtons) {
-      button.on('click', async function handleEpisodes(evt) {
+      button.addEventListener('click', async function handleEpisodes(evt) {
         evt.preventDefault();
-        const episodes = [];
-        episodes.unshift(await getEpisodes(button.id));
-        if (typeof episodes[0] === "string" && episodes[0].startsWith("error")) {
-
-        } else (displayEpisodes(episodes[0]))
+        const episodesArr = [];
+        // I think this next line is the root of my problems
+        // maybe I should go back to the way I did the shows 
+        // with putting the button.ids in an array, 
+        // checking [0] for error message,
+        // THEN iterating
+        displayEpisodes(await getEpisodes(button.id));
       });
     };
   };
