@@ -36,8 +36,7 @@ async function searchShows(query) {
                 image
             };
     } catch (err) {
-        // console.log(err);
-        // displayError(err);
+        displayShowError(err);
         return `error ${err}`;
     }
 
@@ -61,8 +60,11 @@ async function searchShows(query) {
 function populateShows(shows) {
   const $showsList = $("#shows-list");
   $showsList.empty();
+  episodeButtons.splice(0, episodeButtons.length);
 
   for (let show of shows) {
+    const episodesId = `${show.id}-episodes-area`;
+    const episodesListId = `${show.id}-episodes-list`;
     let $item = $(
       `<div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
          <div class="card" data-show-id="${show.id}">
@@ -70,24 +72,32 @@ function populateShows(shows) {
            <img class="card-img-top" src=${show.image} alt="Card image cap">
              <h5 class="card-title">${show.name}</h5>
              <p class="card-text">${show.summary}</p>
+             <button class="cart-text btn btn-block btn-secondary episode-buttons" id="${show.id}">see episode list</button>
+             <section style="display: none" id="${episodesId}">
+             <h2>Episodes</h2> 
+             <ul id="${episodesListId}">
+             </ul>
+           </section>  
+       
+
            </div>
          </div>
        </div>
       `);
-
     $showsList.append($item);
+    episodeButtons.unshift(document.getElementById(show.id));
   }
 }
 
-function displayError(err) {
+function displayShowError(err) {
+  console.log('displaying error ', err)
     let $item = $(
         `<div class="col-md-6 col-lg-3 Show" data-show-id="">
            <div class="card" data-show-id="">
              <div class="card-body">
                <h5 class="card-title">Error</h5>
-// TODO: might want to make more user-friendly error message(s)
+                // TODO: might want to make more user-friendly error message(s)
                <p class="card-text">${err}</p>
-
              </div>
            </div>
          </div>
@@ -99,7 +109,50 @@ function displayError(err) {
  *    - get list of matching shows and show in shows list
  */
 
+//  $("#search-form").on("submit", async function handleSearch (evt) {
+//   evt.preventDefault();
+
+//   let query = $("#search-query").val();
+//   if (!query) return;
+
+//   $("#episodes-area").hide();
+
+//   let shows = await searchShows(query);
+
+//   populateShows(shows);
+// });
+
+/** Given a show ID, return list of episodes:
+ *      { id, name, season, number }
+ */
+
+ async function getEpisodes(id) {
+  try {
+    const episodesResponse = await axios.get (`http://api.tvmaze.com/shows/${id}/episodes`);
+    return {
+            id: showResponse.data[0].show.id,
+            name: showResponse.data[0].show.name,
+            summary: showResponse.data[0].show.summary,
+            image
+        };
+} catch (err) {
+    displayShowError(err);
+    return `error ${err}`;
+}
+// TODO: get episodes from tvmaze
+//       you can get this by making GET request to
+//       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
+
+// TODO: return array-of-episode-info, as described in docstring above
+}
+
+function displayEpisodes(episodes) {
+
+}
+
 const shows = [];
+const episodeButtons = [];
+
 $("#search-form").on("submit", async function handleSearch (evt) {
   evt.preventDefault();
 
@@ -108,26 +161,23 @@ $("#search-form").on("submit", async function handleSearch (evt) {
 
   $("#episodes-area").hide();
 
-
+// TODO: error messages still aren't working, but at least I've got it to display the show and not hide everything when there's an error
   shows.unshift(await searchShows(query));
-  if (shows[0].startsWith("error") {
-    displayError(shows[0]);
+  if (typeof shows[0] === "string" && shows[0].startsWith("error")) {
     shows.splice(0, 1);
     return;
-  }
-  populateShows(shows);
+  } else (populateShows(shows));
+
+  if (episodeButtons.length > 0) {
+    for (let button of episodeButtons) {
+      button.on('click', async function handleEpisodes(evt) {
+        evt.preventDefault();
+        const episodes = [];
+        episodes.unshift(await getEpisodes(button.id));
+        if (typeof episodes[0] === "string" && episodes[0].startsWith("error")) {
+
+        } else (displayEpisodes(episodes[0]))
+      });
+    };
+  };
 });
-
-
-/** Given a show ID, return list of episodes:
- *      { id, name, season, number }
- */
-
-async function getEpisodes(id) {
-    const episodesResponse = await axios.get(`http://api.tvmaze.com/shows/${id}/episodes`)
-  // TODO: get episodes from tvmaze
-  //       you can get this by making GET request to
-  //       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
-
-  // TODO: return array-of-episode-info, as described in docstring above
-}
