@@ -1,22 +1,3 @@
-/** Given a query string, return array of matching shows:
- *     { id, name, summary, episodesUrl }
- */
-
-
-/** Search Shows
- *    - given a search term, search for tv shows that
- *      match that query.  The function is async show it
- *       will be returning a promise.
- *
- *   - Returns an array of objects. Each object should include
- *     following show information:
- *    {
-        id: <show id>,
-        name: <show name>,
-        summary: <show summary>,
-        image: <an image from the show data, or a default imege if no image exists, (image isn't needed until later)>
-      }
- */
 async function searchShows(query) {
     try {
         const returnArrOfObjs = [];
@@ -43,12 +24,6 @@ async function searchShows(query) {
         return `error ${err}`;
     }
 }
-
-
-
-/** Populate shows list:
- *     - given list of shows, add shows to DOM
- */
 
 function populateShows(shows) {
     const $showsList = $("#shows-list");
@@ -84,6 +59,7 @@ function populateShows(shows) {
     }
 }
 
+// TODO -- I don't think this works
 function displayShowError(err) {
     console.log('show error ', err)
     let $item = $(
@@ -103,19 +79,6 @@ function displayShowError(err) {
  *    - hide episodes area
  *    - get list of matching shows and show in shows list
  */
-
-//  $("#search-form").on("submit", async function handleSearch (evt) {
-//   evt.preventDefault();
-
-//   let query = $("#search-query").val();
-//   if (!query) return;
-
-//   $("#episodes-area").hide();
-
-//   let shows = await searchShows(query);
-
-//   populateShows(shows);
-// });
 
 /** Given a show ID, return list of episodes:
  *      { id, name, season, number }
@@ -143,13 +106,15 @@ async function getEpisodes(id) {
         displayEpisodeError(err);
         return [`error ${err}`];
     }
-    // TODO: get episodes from tvmaze
-    //       you can get this by making GET request to
-    //       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
-
     // TODO: return array-of-episode-info, as described in docstring above
+    // I think this means I need to change the individual buttons to one get episodes button
+    // and put the episode lists under their respective shows
 }
 
+// TODO: fix that to reflect changes above
+// come to think of it, it never worked at all, so 
+// either fix it or scrap and restart it now that you 
+// have a better understanding
 function displayEpisodes(episodes) {
     console.log('display episodes?');
     try {
@@ -181,6 +146,8 @@ function displayEpisodeError(err) {
 }
 
 // TODO: can probably purify this code even further and get rid of this...
+// in fact, you definitely can -- see notes about making only one
+// episodes button
 const episodeButtons = [];
 
 $("#search-form").on("submit", async function handleSearch(evt) {
