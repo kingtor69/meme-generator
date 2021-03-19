@@ -18,37 +18,30 @@
       }
  */
 async function searchShows(query) {
-    // TODO: Make an ajax request to the searchShows api.  Remove
-    // hard coded data.
-
     try {
+        const returnArrOfObjs = [];
         const showResponse = await axios.get(`http://api.tvmaze.com/search/shows?q=${query}`);
-        let image;
-        if (!!showResponse.data[0].show.image.original) {
-            image = showResponse.data[0].show.image.original;
-        } else {
-            image = "https://tinyurl.com/tv-missing";
-        };
-        return {
-            id: showResponse.data[0].show.id,
-            name: showResponse.data[0].show.name,
-            summary: showResponse.data[0].show.summary,
-            image
-        };
+        // debugger;
+        for (let showDuLoupe of showResponse.data) {
+            let image;
+            if (!!showDuLoupe.show.image.original) {
+                image = showDuLoupe.show.image.original;
+            } else {
+                image = "https://tinyurl.com/tv-missing";
+            };
+            returnArrOfObjs.unshift({
+                id: showDuLoupe.show.id,
+                name: showDuLoupe.show.name,
+                summary: showDuLoupe.show.summary,
+                image
+            });
+        }
+        console.log(returnArrOfObjs);
+        return returnArrOfObjs;
     } catch (err) {
         displayShowError(err);
         return `error ${err}`;
     }
-
-
-    //   return [
-    //     {
-    //       id: 1767,
-    //       name: "The Bletchley Circle",
-    //       summary: "<p><b>The Bletchley Circle</b> follows the journey of four ordinary women with extraordinary skills that helped to end World War II.</p><p>Set in 1952, Susan, Millie, Lucy and Jean have returned to their normal lives, modestly setting aside the part they played in producing crucial intelligence, which helped the Allies to victory and shortened the war. When Susan discovers a hidden code behind an unsolved murder she is met by skepticism from the police. She quickly realises she can only begin to crack the murders and bring the culprit to justice with her former friends.</p>",
-    //       image: "http://static.tvmaze.com/uploads/images/medium_portrait/147/369403.jpg"
-    //     }
-    //   ]
 }
 
 
@@ -66,7 +59,6 @@ function populateShows(shows) {
         const episodesId = `${show.id}-episodes-div`;
         const episodesUlId = `${show.id}-episodes-list`;
         let $item = $(`
-      <div class="row">
         <div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
           <div class="card" data-show-id="${show.id}">
             <div class="card-body">
@@ -77,8 +69,6 @@ function populateShows(shows) {
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-6 col-lg-3" style="display: none" id="${episodesId}">
           <div class="card" data-show-id="">
             <div class="card-body">
@@ -87,7 +77,7 @@ function populateShows(shows) {
               </ul>
             </div>
           </div>
-        </div>       
+        </div>
       `);
         $showsList.append($item);
         episodeButtons.unshift(document.getElementById(show.id));
@@ -190,7 +180,7 @@ function displayEpisodeError(err) {
     console.log('episode error ', err);
 }
 
-const shows = [];
+// TODO: can probably purify this code even further and get rid of this...
 const episodeButtons = [];
 
 $("#search-form").on("submit", async function handleSearch(evt) {
@@ -202,12 +192,13 @@ $("#search-form").on("submit", async function handleSearch(evt) {
     // $("#episodes-area").hide();
 
     // TODO: error messages still aren't working, but at least I've got it to display the show and not hide everything when there's an error
-    shows.unshift(await searchShows(query));
+    let shows = await searchShows(query);
     if (typeof shows[0] === "string" && shows[0].startsWith("error")) {
         shows.splice(0, 1);
         return;
     } else(populateShows(shows));
 
+    // TODO: (see purification idea above) ...by putting a querySelectAll here for the episode buttons
     if (episodeButtons.length > 0) {
         for (let button of episodeButtons) {
             button.addEventListener('click', async function handleEpisodes(evt) {
