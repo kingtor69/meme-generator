@@ -23,7 +23,6 @@ async function searchShows(query) {
 
     try {
         const showResponse = await axios.get(`http://api.tvmaze.com/search/shows?q=${query}`);
-        // debugger;
         let image;
         if (!!showResponse.data[0].show.image.original) {
             image = showResponse.data[0].show.image.original;
@@ -59,14 +58,15 @@ async function searchShows(query) {
  */
 
 function populateShows(shows) {
-    const $rowsForShows = $("#row-for-shows");
-    $rowsForShows.empty();
+    const $showsList = $("#shows-list");
+    $showsList.empty();
     episodeButtons.splice(0, episodeButtons.length);
 
     for (let show of shows) {
         const episodesId = `${show.id}-episodes-div`;
         const episodesUlId = `${show.id}-episodes-list`;
         let $item = $(`
+      <div class="row">
         <div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
           <div class="card" data-show-id="${show.id}">
             <div class="card-body">
@@ -77,6 +77,8 @@ function populateShows(shows) {
             </div>
           </div>
         </div>
+      </div>
+      <div class="row">
         <div class="col-md-6 col-lg-3" style="display: none" id="${episodesId}">
           <div class="card" data-show-id="">
             <div class="card-body">
@@ -85,8 +87,9 @@ function populateShows(shows) {
               </ul>
             </div>
           </div>
+        </div>       
       `);
-        $rowsForShows.append($item);
+        $showsList.append($item);
         episodeButtons.unshift(document.getElementById(show.id));
     }
 }
@@ -187,23 +190,15 @@ function displayEpisodeError(err) {
     console.log('episode error ', err);
 }
 
-function setUpShowAndEpisodesRows() {
-    const $showList = $("#show-list");
-    let $show = $(`<div class="row" id="row-for-shows"></div>`);
-    $showList.append($show);
-    let $episodes = $(`<div class="row" id="row-for-episodes"></div>`);
-    $showList.append($episodes);
-};
-
-// debugger;
 const shows = [];
 const episodeButtons = [];
-setUpShowAndEpisodesRows();
+
 $("#search-form").on("submit", async function handleSearch(evt) {
     evt.preventDefault();
 
     let query = $("#search-query").val();
     if (!query) return;
+
     // $("#episodes-area").hide();
 
     // TODO: error messages still aren't working, but at least I've got it to display the show and not hide everything when there's an error
@@ -215,7 +210,6 @@ $("#search-form").on("submit", async function handleSearch(evt) {
 
     if (episodeButtons.length > 0) {
         for (let button of episodeButtons) {
-            // crap... broke it
             button.addEventListener('click', async function handleEpisodes(evt) {
                 evt.preventDefault();
                 const episodesArr = [];
