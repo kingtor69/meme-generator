@@ -18,11 +18,12 @@
       }
  */
 async function searchShows(query) {
-  // TODO: Make an ajax request to the searchShows api.  Remove
-  // hard coded data.
+    // TODO: Make an ajax request to the searchShows api.  Remove
+    // hard coded data.
 
     try {
-        const showResponse = await axios.get (`http://api.tvmaze.com/search/shows?q=${query}`);
+        const showResponse = await axios.get(`http://api.tvmaze.com/search/shows?q=${query}`);
+        // debugger;
         let image;
         if (!!showResponse.data[0].show.image.original) {
             image = showResponse.data[0].show.image.original;
@@ -30,25 +31,25 @@ async function searchShows(query) {
             image = "https://tinyurl.com/tv-missing";
         };
         return {
-                id: showResponse.data[0].show.id,
-                name: showResponse.data[0].show.name,
-                summary: showResponse.data[0].show.summary,
-                image
-            };
+            id: showResponse.data[0].show.id,
+            name: showResponse.data[0].show.name,
+            summary: showResponse.data[0].show.summary,
+            image
+        };
     } catch (err) {
         displayShowError(err);
         return `error ${err}`;
     }
 
 
-//   return [
-//     {
-//       id: 1767,
-//       name: "The Bletchley Circle",
-//       summary: "<p><b>The Bletchley Circle</b> follows the journey of four ordinary women with extraordinary skills that helped to end World War II.</p><p>Set in 1952, Susan, Millie, Lucy and Jean have returned to their normal lives, modestly setting aside the part they played in producing crucial intelligence, which helped the Allies to victory and shortened the war. When Susan discovers a hidden code behind an unsolved murder she is met by skepticism from the police. She quickly realises she can only begin to crack the murders and bring the culprit to justice with her former friends.</p>",
-//       image: "http://static.tvmaze.com/uploads/images/medium_portrait/147/369403.jpg"
-//     }
-//   ]
+    //   return [
+    //     {
+    //       id: 1767,
+    //       name: "The Bletchley Circle",
+    //       summary: "<p><b>The Bletchley Circle</b> follows the journey of four ordinary women with extraordinary skills that helped to end World War II.</p><p>Set in 1952, Susan, Millie, Lucy and Jean have returned to their normal lives, modestly setting aside the part they played in producing crucial intelligence, which helped the Allies to victory and shortened the war. When Susan discovers a hidden code behind an unsolved murder she is met by skepticism from the police. She quickly realises she can only begin to crack the murders and bring the culprit to justice with her former friends.</p>",
+    //       image: "http://static.tvmaze.com/uploads/images/medium_portrait/147/369403.jpg"
+    //     }
+    //   ]
 }
 
 
@@ -58,15 +59,14 @@ async function searchShows(query) {
  */
 
 function populateShows(shows) {
-  const $showsList = $("#shows-list");
-  $showsList.empty();
-  episodeButtons.splice(0, episodeButtons.length);
+    const $rowsForShows = $("#row-for-shows");
+    $rowsForShows.empty();
+    episodeButtons.splice(0, episodeButtons.length);
 
-  for (let show of shows) {
-    const episodesId = `${show.id}-episodes-div`;
-    const episodesUlId = `${show.id}-episodes-list`;
-    let $item = $(`
-      <div class="row">
+    for (let show of shows) {
+        const episodesId = `${show.id}-episodes-div`;
+        const episodesUlId = `${show.id}-episodes-list`;
+        let $item = $(`
         <div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
           <div class="card" data-show-id="${show.id}">
             <div class="card-body">
@@ -77,8 +77,6 @@ function populateShows(shows) {
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-6 col-lg-3" style="display: none" id="${episodesId}">
           <div class="card" data-show-id="">
             <div class="card-body">
@@ -87,15 +85,14 @@ function populateShows(shows) {
               </ul>
             </div>
           </div>
-        </div>       
       `);
-    $showsList.append($item);
-    episodeButtons.unshift(document.getElementById(show.id));
-  }
+        $rowsForShows.append($item);
+        episodeButtons.unshift(document.getElementById(show.id));
+    }
 }
 
 function displayShowError(err) {
-  console.log('displaying error ', err)
+    console.log('show error ', err)
     let $item = $(
         `<div class="col-md-6 col-lg-3 Show" data-show-id="">
            <div class="card" data-show-id="">
@@ -131,85 +128,110 @@ function displayShowError(err) {
  *      { id, name, season, number }
  */
 
- async function getEpisodes(id) {
-  try {
-    const episodesResponse = await axios.get (`http://api.tvmaze.com/shows/${id}/episodes`);
-    const episodesOutput = [];
-    for (let episode of episodesResponse.data) {
-      const id = episode.id;
-      const name = episode.name;
-      const season = episode.season;
-      const number = episode.number;
-      episodesOutput.unshift({
-        id, name, season, number
-      });
+async function getEpisodes(id) {
+    try {
+        const episodesResponse = await axios.get(`http://api.tvmaze.com/shows/${id}/episodes`);
+        const episodesOutput = [];
+        for (let episode of episodesResponse.data) {
+            const id = episode.id;
+            const name = episode.name;
+            const season = episode.season;
+            const number = episode.number;
+            episodesOutput.unshift({
+                id,
+                name,
+                season,
+                number
+            });
+        }
+        episodesOutput.unshift(id);
+        return episodesOutput;
+    } catch (err) {
+        displayEpisodeError(err);
+        return [`error ${err}`];
     }
-    episodes.Output.unshift(id);
-    return episodesOutput;
-} catch (err) {
-    displayEpisodeError(err);
-    return `error ${err}`;
-}
-// TODO: get episodes from tvmaze
-//       you can get this by making GET request to
-//       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
+    // TODO: get episodes from tvmaze
+    //       you can get this by making GET request to
+    //       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
 
-// TODO: return array-of-episode-info, as described in docstring above
+    // TODO: return array-of-episode-info, as described in docstring above
 }
 
 function displayEpisodes(episodes) {
-  try {
-    (populateShows(shows));
-    // console.log(episodes);
-    const showUlId = `${episodes[0]}-episodes-list`;
-    const episodesUl = document.getElementById(showUlId);
-    episodes.slice(0,1);
-    for (let episode of episodes) {
-      episodesUl.innerHTML += `
-        <li ID="${episode.id}">${episode.name} (season ${episode.season}, number ${episode.number})</li>
-      `;
+    console.log('display episodes?');
+    try {
+        console.log(episodes);
+        console.log(episodes.length);
+        // debugger;
+        const showUlId = `${episodes[0]}-episodes-list`;
+        const episodesUl = document.getElementById(showUlId);
+        for (let i = 1; i < episodes.length; i++) {
+            console.log(`loop of i=${i}`);
+            console.log(episodes[i]);
+            const liOfI = document.createElement('li');
+            liOfI.id = episode.id;
+            liOfI.innerText = `${episode.name} (season ${episode.season}, number ${episode.number})`;
+            episodesUl.appendChild(liOfI);
+            //       episodesUl.innerHTML += `
+            //   <li ID="${episode.id}">${episode.name} (season ${episode.season}, number ${episode.number})</li>
+            // `;
+        }
+        episodesUl.classList.remove(Hide);
+        episodesUl.classList.add(Show);
+    } catch (err) {
+        return `episode display error ${err}`;
     }
-    episodesUl.classList.remove(Hide);
-    episodesUl.classList.add(Show);
-  } catch (err) {
-    return `episode display error ${err}`;
-  }
 }
 
 function displayEpisodeError(err) {
-
+    console.log('episode error ', err);
 }
 
+function setUpShowAndEpisodesRows() {
+    const $showList = $("#show-list");
+    let $show = $(`<div class="row" id="row-for-shows"></div>`);
+    $showList.append($show);
+    let $episodes = $(`<div class="row" id="row-for-episodes"></div>`);
+    $showList.append($episodes);
+};
+
+// debugger;
 const shows = [];
 const episodeButtons = [];
+setUpShowAndEpisodesRows();
+$("#search-form").on("submit", async function handleSearch(evt) {
+    evt.preventDefault();
 
-$("#search-form").on("submit", async function handleSearch (evt) {
-  evt.preventDefault();
+    let query = $("#search-query").val();
+    if (!query) return;
+    // $("#episodes-area").hide();
 
-  let query = $("#search-query").val();
-  if (!query) return;
+    // TODO: error messages still aren't working, but at least I've got it to display the show and not hide everything when there's an error
+    shows.unshift(await searchShows(query));
+    if (typeof shows[0] === "string" && shows[0].startsWith("error")) {
+        shows.splice(0, 1);
+        return;
+    } else(populateShows(shows));
 
-  // $("#episodes-area").hide();
+    if (episodeButtons.length > 0) {
+        for (let button of episodeButtons) {
+            // crap... broke it
+            button.addEventListener('click', async function handleEpisodes(evt) {
+                evt.preventDefault();
+                const episodesArr = [];
+                // I think this next line is the root of my problems
+                // maybe I should go back to the way I did the shows 
+                // with putting the button.ids in an array, 
+                // checking [0] for error message,
+                // THEN iterating
 
-// TODO: error messages still aren't working, but at least I've got it to display the show and not hide everything when there's an error
-  shows.unshift(await searchShows(query));
-  if (typeof shows[0] === "string" && shows[0].startsWith("error")) {
-    shows.splice(0, 1);
-    return;
-  } else (populateShows(shows));
-
-  if (episodeButtons.length > 0) {
-    for (let button of episodeButtons) {
-      button.addEventListener('click', async function handleEpisodes(evt) {
-        evt.preventDefault();
-        const episodesArr = [];
-        // I think this next line is the root of my problems
-        // maybe I should go back to the way I did the shows 
-        // with putting the button.ids in an array, 
-        // checking [0] for error message,
-        // THEN iterating
-        displayEpisodes(await getEpisodes(button.id));
-      });
+                const episodeArray = (await getEpisodes(button.id));
+                // console.log(episodeArray);
+                if (typeof episodeArray[0] === "string" && !episodeArray[0].startsWith("error")) {
+                    // console.log("got some, now let's display them");
+                    displayEpisodes(episodeArray);
+                };
+            });
+        };
     };
-  };
 });
