@@ -105,15 +105,28 @@ class Game {
 };
 
 
-$('body').prepend(`
-	<h1>Jeopardy!</h1>
-		<section id="game-container">
-			<div id="board-container>
-			</div>
-			<button id="new-game-button>Start New Game</button>
-		</section>
-`);
-// $newGameButton.on('click', function(evt) {
-//     new Game.playGame();
-// });
-// new Game.playGame();
+function start() {
+    const body = document.querySelector('body');
+    const h1 = document.createElement('h1');
+    h1.innerText = "Jeopardy!";
+    const gameSection = document.createElement('section');
+    gameSection.id = "game-container";
+    const boardDiv = document.createElement('div');
+    boardDiv.id = "game-board-div";
+    const newGameButton = document.createElement('button');
+    newGameButton.id = "new-game-button";
+    newGameButton.innerText = "Start New Game";
+    body.appendChild(h1);
+    body.appendChild(gameSection);
+    gameSection.appendChild(boardDiv);
+    gameSection.appendChild(newGameButton);
+};
+
+start();
+const newGameButton = document.querySelector('#new-game-button');
+newGameButton.addEventListener('click', function() {
+    const nextGameObj = new Game;
+    nextGameObj.playGame();
+});
+const firstGameObj = new Game;
+firstGameObj.playGame();
