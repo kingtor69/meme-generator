@@ -20,15 +20,21 @@ class Game {
     //    ...
     //  ]
 
-    constructor() {
-        this.categories = [];
-        this.board = [];
-    }
+    // constructor() {
+    //     this.categories = [];
+    //     this.board = [];
+    // }
 
-    playGame() {
-        console.log('well, here we are. now what?');
-        this.createHtmlBoard();
-        this.categories = getCategoryIds();
+    async playGame() {
+        const categoryIds = await this.getCategoryIds();
+        const categories = [];
+        async (categoryIds) {
+            for (let categoryId of categoryIds) {
+                categories.push(await getCategory(categoryId));
+            };
+        }
+
+        const this.board = this.fillTable(categories);
     }
 
     /** Get NUM_CATEGORIES random category from API.
@@ -38,7 +44,12 @@ class Game {
 
 
 
-    getCategoryIds() {}
+    async getCategoryIds() {
+        const categoriesArray = [];
+        // const herdOfCats = await <-API call for a batch of categories->
+        for (let i = 0; i < 6; i++)
+            return categoriesArray;
+    }
 
     /** Return object with data about a category:
      *
@@ -62,7 +73,16 @@ class Game {
      *   (initally, just show a "?" where the question/answer would go.)
      */
 
-    async fillTable() {}
+    // this might tickle my brain a bit: the board is in rows (because HTML Tables)
+    // but the answers and questions logically belong in columns
+
+    async fillTable(categories) {
+        const answers = [];
+        const questions = [];
+
+        const board = { categories, answers, questions };
+        return board;
+    }
 
     /** Handle clicking on a clue: show the question or answer.
      *
@@ -208,4 +228,4 @@ newGameButton.addEventListener('click', function() {
 });
 
 let gameObj = new Game;
-firstGameObj.playGame();
+gameObj.playGame();
