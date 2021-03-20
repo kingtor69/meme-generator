@@ -129,9 +129,6 @@ class Game {
 
 // this could change in future releases, 
 // but the css to size the board will have to become responsive to that change
-const numOfCategories = 6;
-const answersPerCategory = 5;
-
 function start() {
     const body = document.querySelector('body');
     const h1 = document.createElement('h1');
@@ -156,27 +153,58 @@ function createHtmlBoard() {
     gameTable.id = "game-table"
     gameTable.innerHTML = `
         <thead>
-            <tr id="category-row">
+            <tr>
+                <th id="1"></th>
+                <th id="2"></th>
+                <th id="3"></th>
+                <th id="4"></th>
+                <th id="5"></th>
+                <th id="6"></th>
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td id="1-1"></td>
+                <td id="2-1"></td>
+                <td id="3-1"></td>
+                <td id="4-1"></td>
+                <td id="5-1"></td>
+                <td id="6-1"></td>
+            </tr>
+            <tr>
+                <td id="1-2"></td>
+                <td id="2-2"></td>
+                <td id="3-2"></td>
+                <td id="4-2"></td>
+                <td id="5-2"></td>
+                <td id="6-2"></td>
+            </tr>
+            <tr>
+                <td id="1-3"></td>
+                <td id="2-3"></td>
+                <td id="3-3"></td>
+                <td id="4-3"></td>
+                <td id="5-3"></td>
+                <td id="6-3"></td>
+            </tr>
+            <tr>
+                <td id="1-4"></td>
+                <td id="2-4"></td>
+                <td id="3-4"></td>
+                <td id="4-4"></td>
+                <td id="5-4"></td>
+                <td id="6-4"></td>
+            </tr>
+            <tr>
+                <td id="1-5"></td>
+                <td id="2-5"></td>
+                <td id="3-5"></td>
+                <td id="4-5"></td>
+                <td id="5-5"></td>
+                <td id="6-5"></td>
+            </tr>
         </tbody>
     `;
-    const categoryRow = gameTable.querySelector('#category-row')
-    const answersTbody = gameTable.querySelector('tbody');
-    for (let a = 0; a <= answersPerCategory; a++) {
-        const rowA = document.createElement('tr');
-        rowA.id = `row${a}`;
-        answersTbody.appendChild(rowA);
-        for (let c = 1; c <= numOfCategories; c++) {
-            const headerC = document.createElement('th');
-            headerC.id = `${c}`;
-            categoryRow.appendChild(headerC);
-            const columnC = document.createElement('td');
-            columnC.id = `${c}-${a}`;
-            rowA.appendChild(columnC);
-        };
-    };
     gameBoardDiv.appendChild(gameTable);
 };
 
