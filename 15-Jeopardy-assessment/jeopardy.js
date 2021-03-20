@@ -22,23 +22,21 @@ class Game {
 
     constructor() {
         this.categories = [];
-        this.board = [
-            [null, null, null, null, null, null],
-            [null, null, null, null, null, null],
-            [null, null, null, null, null, null],
-            [null, null, null, null, null, null],
-            [null, null, null, null, null, null]
-        ];
+        this.board = [];
     }
 
     playGame() {
-        console.log("well, that's something, eh?");
+        console.log('well, here we are. now what?');
+        this.createHtmlBoard();
+        this.categories = getCategoryIds();
     }
 
     /** Get NUM_CATEGORIES random category from API.
      *
      * Returns array of category ids
      */
+
+
 
     getCategoryIds() {}
 
@@ -54,7 +52,7 @@ class Game {
      *   ]
      */
 
-    getCategory(catId) {}
+    async getCategory(catId) {}
 
     /** Fill the HTML table#jeopardy with the categories & cells for questions.
      *
@@ -74,7 +72,10 @@ class Game {
      * - if currently "answer", ignore click
      * */
 
-    handleClick(evt) {}
+    handleClick(evt) {
+        const clickedId = evt.path[0].id;
+
+    }
 
     /** Wipe the current Jeopardy board, show the loading spinner,
      * and update the button used to fetch data.
@@ -111,22 +112,100 @@ function start() {
     h1.innerText = "Jeopardy!";
     const gameSection = document.createElement('section');
     gameSection.id = "game-container";
-    const boardDiv = document.createElement('div');
-    boardDiv.id = "game-board-div";
+    const gameBoardDiv = document.createElement('div');
+    gameBoardDiv.id = "game-board-div";
     const newGameButton = document.createElement('button');
     newGameButton.id = "new-game-button";
     newGameButton.innerText = "Start New Game";
     body.appendChild(h1);
     body.appendChild(gameSection);
-    gameSection.appendChild(boardDiv);
+    gameSection.appendChild(gameBoardDiv);
     gameSection.appendChild(newGameButton);
+    createHtmlBoard();
+};
+
+function createHtmlBoard() {
+    const gameBoardDiv = document.querySelector('#game-board-div');
+    const gameTable = document.createElement('table');
+    gameTable.id = "game-table"
+    gameTable.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th id="1"></th>
+                    <th id="2"></th>
+                    <th id="3"></th>
+                    <th id="4"></th>
+                    <th id="5"></th>
+                    <th id="6"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="1-1"></td>
+                    <td id="1-2"></td>
+                    <td id="1-3"></td>
+                    <td id="1-4"></td>
+                    <td id="1-5"></td>
+                    <td id="1-6"></td>
+                </tr>
+                <tr>
+                    <td id="2-1"></td>
+                    <td id="2-2"></td>
+                    <td id="2-3"></td>
+                    <td id="2-4"></td>
+                    <td id="2-5"></td>
+                    <td id="2-6"></td>
+                </tr>
+                <tr>
+                    <td id="3-1"></td>
+                    <td id="3-2"></td>
+                    <td id="3-3"></td>
+                    <td id="3-4"></td>
+                    <td id="3-5"></td>
+                    <td id="3-6"></td>
+                </tr>
+                <tr>
+                    <td id="4-1"></td>
+                    <td id="4-2"></td>
+                    <td id="4-3"></td>
+                    <td id="4-4"></td>
+                    <td id="4-5"></td>
+                    <td id="4-6"></td>
+                </tr>
+                <tr>
+                    <td id="5-1"></td>
+                    <td id="5-2"></td>
+                    <td id="5-3"></td>
+                    <td id="5-4"></td>
+                    <td id="5-5"></td>
+                    <td id="5-6"></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+    gameBoardDiv.appendChild(gameTable);
 };
 
 start();
+
+const catBtns = document.querySelectorAll('th');
+const gameBtns = document.querySelectorAll('td');
 const newGameButton = document.querySelector('#new-game-button');
+for (let button of catBtns) {
+    button.addEventListener('click', function(evt) {
+        gameObj.handleClick(evt);
+    })
+}
+for (let button of gameBtns) {
+    button.addEventListener('click', function(evt) {
+        console.log(evt.path[0].id);
+    })
+}
 newGameButton.addEventListener('click', function() {
-    const nextGameObj = new Game;
-    nextGameObj.playGame();
+    gameObj = new Game;
+    gameObj.playGame();
 });
-const firstGameObj = new Game;
+
+let gameObj = new Game;
 firstGameObj.playGame();

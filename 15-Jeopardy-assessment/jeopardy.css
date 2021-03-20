@@ -1,14 +1,40 @@
 body {
     font-family: Roboto, Ariel, sans-serif;
+    background-color: black;
+    color: white;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    width: 65vw;
+    margin-top: 0px;
 }
 
 #new-game-button {
     background-color: #74119c;
     font-size: 1.5rem;
+    color: white;
+    border: 4px solid black;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+table {
+    background-color: #060ce9;
+}
+
+th,
+td {
+    /*    display: block;
+    position: relative;*/
+    height: 10vh;
+    width: 10vw;
+    border: 6px solid black;
 }
 
 /* some colors you may find useful:
-	// bluish purple:
+  // bluish purple:
   #115ff4
   // game board blue:
   #060ce9
