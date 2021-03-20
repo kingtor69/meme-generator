@@ -28,13 +28,15 @@ class Game {
     async playGame() {
         const categoryIds = await this.getCategoryIds();
         const categories = [];
-        async (categoryIds) {
-            for (let categoryId of categoryIds) {
-                categories.push(await getCategory(categoryId));
-            };
-        }
 
-        const this.board = this.fillTable(categories);
+        // not sure what this is...
+        // async (categoryIds) {
+        //     for (let categoryId of categoryIds) {
+        //         categories.push(await getCategory(categoryId));
+        //     };
+        // }
+
+        // const this.board = this.fillTable(categories);
     }
 
     /** Get NUM_CATEGORIES random category from API.
@@ -125,6 +127,10 @@ class Game {
     // TODO
 };
 
+// this could change in future releases, 
+// but the css to size the board will have to become responsive to that change
+const numOfCategories = 6;
+const answersPerCategory = 5;
 
 function start() {
     const body = document.querySelector('body');
@@ -149,61 +155,28 @@ function createHtmlBoard() {
     const gameTable = document.createElement('table');
     gameTable.id = "game-table"
     gameTable.innerHTML = `
-        <table>
-            <thead>
-                <tr>
-                    <th id="1"></th>
-                    <th id="2"></th>
-                    <th id="3"></th>
-                    <th id="4"></th>
-                    <th id="5"></th>
-                    <th id="6"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td id="1-1"></td>
-                    <td id="1-2"></td>
-                    <td id="1-3"></td>
-                    <td id="1-4"></td>
-                    <td id="1-5"></td>
-                    <td id="1-6"></td>
-                </tr>
-                <tr>
-                    <td id="2-1"></td>
-                    <td id="2-2"></td>
-                    <td id="2-3"></td>
-                    <td id="2-4"></td>
-                    <td id="2-5"></td>
-                    <td id="2-6"></td>
-                </tr>
-                <tr>
-                    <td id="3-1"></td>
-                    <td id="3-2"></td>
-                    <td id="3-3"></td>
-                    <td id="3-4"></td>
-                    <td id="3-5"></td>
-                    <td id="3-6"></td>
-                </tr>
-                <tr>
-                    <td id="4-1"></td>
-                    <td id="4-2"></td>
-                    <td id="4-3"></td>
-                    <td id="4-4"></td>
-                    <td id="4-5"></td>
-                    <td id="4-6"></td>
-                </tr>
-                <tr>
-                    <td id="5-1"></td>
-                    <td id="5-2"></td>
-                    <td id="5-3"></td>
-                    <td id="5-4"></td>
-                    <td id="5-5"></td>
-                    <td id="5-6"></td>
-                </tr>
-            </tbody>
-        </table>
+        <thead>
+            <tr id="category-row">
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
     `;
+    const categoryRow = gameTable.querySelector('#category-row')
+    const answersTbody = gameTable.querySelector('tbody');
+    for (let a = 0; a <= answersPerCategory; a++) {
+        const rowA = document.createElement('tr');
+        rowA.id = `row${a}`;
+        answersTbody.appendChild(rowA);
+        for (let c = 1; c <= numOfCategories; c++) {
+            const headerC = document.createElement('th');
+            headerC.id = `${c}`;
+            categoryRow.appendChild(headerC);
+            const columnC = document.createElement('td');
+            columnC.id = `${c}-${a}`;
+            rowA.appendChild(columnC);
+        };
+    };
     gameBoardDiv.appendChild(gameTable);
 };
 
