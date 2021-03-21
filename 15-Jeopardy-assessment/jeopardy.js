@@ -28,13 +28,10 @@ class Game {
     async playGame() {
         const categoryIds = await this.getCategoryIds();
         const categories = [];
-
-        // not sure what this is...
-        // async (categoryIds) {
-        //     for (let categoryId of categoryIds) {
-        //         categories.push(await getCategory(categoryId));
-        //     };
-        // }
+        for (let catId of categoryIds) {
+            categories.push(await this.getCategory(catId));
+        };
+        // TODO: now get questions and answers;
 
         // const this.board = this.fillTable(categories);
     }
@@ -45,14 +42,51 @@ class Game {
      */
 
 
-
+    // 100 100s
     async getCategoryIds() {
-        const categoriesArray = [];
-        // const herdOfCats = await <-API call for a batch of categories->
-        for (let i = 0; i < 6; i++)
-            return categoriesArray;
+        const categoryIds = [];
+        const offset = Math.floor(Math.random() * 100) * 100;
+        try {
+            const herdOfCats = await axios.get(`http://jservice.io/api/categories?count=100&offset=${offset}`);
+            for (let i = 0; i < 6;) {
+                const catId = herdOfCats.data[Math.floor(Math.random() * 100)].id;
+                if (!categoryIds.includes(catId)) {
+                    categoryIds.push(catId);
+                    i++;
+                }
+            }
+            return categoryIds;
+        } catch (err) {
+            this.displayError(err);
+        }
     }
 
+    displayError(err) {
+        alert(`Something went wrong. It's me, not you. Try a new game. ${err}`);
+    }
+
+    // I don't think I'll ever use this, but it will be useful when adapted to invalid clues
+    async replaceCategoryId(categoryIds) {
+        let probyId;
+        // get a new ID between 1st and 9,999th
+        for (let catId of categoryIds) {
+            if (!catId) {
+                const offset = Math.floor(Math.random() * 10000);
+                const probyCat = await axios.get(`http://jservice.io/api/categories?offset=${offset}`);
+                probyId = probyCat.data[0].id
+            }
+        }
+        for (let catId of categoryIds) {
+            if (probyId === catId) {
+                replaceCategoryId(categoryIds);
+            }
+        }
+        for (let catId of categoryIds) {
+            if (!catId) {
+                categoryIds.slice(catId, 1, probyId);
+            }
+        }
+    };
     /** Return object with data about a category:
      *
      *  Returns { title: "Math", clues: clue-array }
@@ -64,8 +98,10 @@ class Game {
      *      ...
      *   ]
      */
-
-    async getCategory(catId) {}
+    async getCategory(catId) {
+        const category = await axios.get(`http://jservice.io/api/category?id=${catId}`);
+        return category;
+    }
 
     /** Fill the HTML table#jeopardy with the categories & cells for questions.
      *
@@ -96,7 +132,7 @@ class Game {
 
     handleClick(evt) {
         const clickedId = evt.path[0].id;
-
+        console.log(`clicked on ${clickedId}. What are you gonna do about it?`)
     }
 
     /** Wipe the current Jeopardy board, show the loading spinner,
@@ -220,7 +256,7 @@ for (let button of catBtns) {
 }
 for (let button of gameBtns) {
     button.addEventListener('click', function(evt) {
-        console.log(evt.path[0].id);
+        gameObj.handeClick(evt);
     })
 }
 newGameButton.addEventListener('click', function() {
