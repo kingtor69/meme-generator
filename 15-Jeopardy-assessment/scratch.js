@@ -25,3 +25,9 @@ try {
     }
     // err is an object, but I can't seem to destructure it
 }
+
+const animationTest = document.querySelector('#animation-test');
+animationTest.addEventListener('click', function() {
+    console.log('click');
+    animationTest.classList.toggle('animate');
+});
