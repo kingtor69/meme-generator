@@ -22,6 +22,8 @@ h1 {
 
 table {
     background-color: #060ce9;
+    font-size: 1.4rem;
+    text-transform: uppercase;
 }
 
 th,
@@ -31,6 +33,14 @@ td {
     height: 10vh;
     width: 10vw;
     border: 6px solid black;
+}
+
+td {
+    text-align: center;
+}
+
+td.blank {
+    font-size: 2em;
 }
 
 /* some colors you may find useful:

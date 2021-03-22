@@ -20,10 +20,10 @@ class Game {
     //    ...
     //  ]
 
-    // constructor() {
-    //     this.categories = [];
-    //     this.board = [];
-    // }
+    constructor() {
+        //     this.categories = [];
+        this.board = [];
+    }
 
     async playGame() {
         const categoryIds = await this.getCategoryIds();
@@ -31,9 +31,9 @@ class Game {
         for (let catId of categoryIds) {
             categories.push(await this.getCategory(catId));
         };
-        // TODO: now get questions and answers;
-
-        // const this.board = this.fillTable(categories);
+        // get questions and answers;
+        await this.buildBoard(categories);
+        await this.fillHtmlTable();
     }
 
     /** Get NUM_CATEGORIES random category from API.
@@ -65,28 +65,22 @@ class Game {
         alert(`Something went wrong. It's me, not you. Try a new game. ${err}`);
     }
 
-    // I don't think I'll ever use this, but it will be useful when adapted to invalid clues
-    async replaceCategoryId(categoryIds) {
-        let probyId;
-        // get a new ID between 1st and 9,999th
-        for (let catId of categoryIds) {
-            if (!catId) {
-                const offset = Math.floor(Math.random() * 10000);
-                const probyCat = await axios.get(`http://jservice.io/api/categories?offset=${offset}`);
-                probyId = probyCat.data[0].id
+    async replaceFalsyCategory(categories) {
+        // get a new offset between 1st and 9,999th
+        const offset = Math.floor(Math.random() * 10000);
+        // get the category at that offset
+        const probyCat = await axios.get(`http://jservice.io/api/categories?offset=${offset}`);
+        for (let i = 0; i < categories.length; i++) {
+            if (probyCat.data.id === categories[i].data.id) {
+                this.replaceFalsyCategory(categories);
+            }
+            if (!categories[i]) {
+                categories.slice(categories[i], 1, probyCat);
             }
         }
-        for (let catId of categoryIds) {
-            if (probyId === catId) {
-                replaceCategoryId(categoryIds);
-            }
-        }
-        for (let catId of categoryIds) {
-            if (!catId) {
-                categoryIds.slice(catId, 1, probyId);
-            }
-        }
+        return categories;
     };
+
     /** Return object with data about a category:
      *
      *  Returns { title: "Math", clues: clue-array }
@@ -114,12 +108,68 @@ class Game {
     // this might tickle my brain a bit: the board is in rows (because HTML Tables)
     // but the answers and questions logically belong in columns
 
-    async fillTable(categories) {
-        const answers = [];
-        const questions = [];
+    buildBoard(categories) {
+        this.board = [];
+        let c = 0;
+        for (let category of categories) {
+            const clues = this.get5Clues(category);
+            if (!clues) {
+                this.replaceFalsyCategory(categories);
+            }
+            // if (typeof clues === "string" && clues === "get a new category") {
+            //     category = null;
+            //     this.replaceFalsyCategory(categories);
+            // };
+            const objeeDuLoupe = { category };
+            objeeDuLoupe[c] = clues;
+            this.board.push(objeeDuLoupe);
+        }
+    }
 
-        const board = { categories, answers, questions };
-        return board;
+    get5Clues(category) {
+        const clues = [];
+        if (category.data.clues_count === 5) {
+            let a = 0;
+            for (let clue of category.data.clues) {
+                if (!(clue.invalid_count < 2)) {
+                    category = null;
+                    console.log('get a new category');
+                    return null;
+                }
+                clues.push(clue);
+            };
+            return clues;
+        } else if (category.data.clues_count > 5) {
+            let a = 0;
+            // for 
+            while (a < 5) {
+                // get a random clue, 
+                if (!false) {
+                    // if it's not already in the array, push it into the array and:
+                    a++;
+                } else {
+                    console.log("oops. you're in an infinite loop. mah bad.");
+                    // if it is already in, get another one,
+                }
+            }
+        } else {
+            // not enough valid clues in this category
+            category = null;
+            this.replaceFalsyCategory(categories);
+        }
+        return clues;
+    }
+
+    fillHtmlTable() {
+        // console.log('this.fillHtmlTable(board) the board is');
+        // console.log(board);
+        for (let c = 0; c < this.board.length; c++) {
+            const $catC = $(`#${c}`);
+            $catC.text(this.board[c].category.data.title);
+        };
+        const $tds = $('td');
+        $tds.text('???');
+        $tds.addClass('blank');
     }
 
     /** Handle clicking on a clue: show the question or answer.
@@ -132,7 +182,9 @@ class Game {
 
     handleClick(evt) {
         const clickedId = evt.path[0].id;
-        console.log(`clicked on ${clickedId}. What are you gonna do about it?`)
+        console.log(`clicked on ${clickedId}. What are you gonna do about it?`);
+        console.log(evt);
+        console.log("and remember clues are at this.board[c].c.0.a");
     }
 
     /** Wipe the current Jeopardy board, show the loading spinner,
@@ -152,15 +204,14 @@ class Game {
      * - create HTML table
      * */
 
-    async setupAndStart() {}
-
+    // async setupAndStart() {}
+    // I think I did that outside the object
+    // should it have been asynchronous? 
     /** On click of start / restart button, set up game. */
 
-    // TODO
 
     /** On page load, add event handler for clicking clues */
 
-    // TODO
 };
 
 // this could change in future releases, 
@@ -187,60 +238,64 @@ function createHtmlBoard() {
     const gameBoardDiv = document.querySelector('#game-board-div');
     const gameTable = document.createElement('table');
     gameTable.id = "game-table"
+    // TODO right near the end: remove text from these th and td
     gameTable.innerHTML = `
         <thead>
             <tr>
+                <th id="0"></th>
                 <th id="1"></th>
                 <th id="2"></th>
                 <th id="3"></th>
                 <th id="4"></th>
                 <th id="5"></th>
-                <th id="6"></th>
             </tr>
         </thead>
         <tbody>
             <tr>
+                <td id="0-0"></td>
+                <td id="1-0"></td>
+                <td id="2-0"></td>
+                <td id="3-0"></td>
+                <td id="4-0"></td>
+                <td id="5-0"></td>
+            </tr>
+            <tr>
+                <td id="0-1"></td>
                 <td id="1-1"></td>
                 <td id="2-1"></td>
                 <td id="3-1"></td>
                 <td id="4-1"></td>
                 <td id="5-1"></td>
-                <td id="6-1"></td>
             </tr>
             <tr>
+                <td id="0-2"></td>
                 <td id="1-2"></td>
                 <td id="2-2"></td>
                 <td id="3-2"></td>
                 <td id="4-2"></td>
                 <td id="5-2"></td>
-                <td id="6-2"></td>
             </tr>
             <tr>
+                <td id="0-3"></td>
                 <td id="1-3"></td>
                 <td id="2-3"></td>
                 <td id="3-3"></td>
                 <td id="4-3"></td>
                 <td id="5-3"></td>
-                <td id="6-3"></td>
             </tr>
             <tr>
+                <td id="0-4"></td>
                 <td id="1-4"></td>
                 <td id="2-4"></td>
                 <td id="3-4"></td>
                 <td id="4-4"></td>
                 <td id="5-4"></td>
-                <td id="6-4"></td>
-            </tr>
-            <tr>
-                <td id="1-5"></td>
-                <td id="2-5"></td>
-                <td id="3-5"></td>
-                <td id="4-5"></td>
-                <td id="5-5"></td>
-                <td id="6-5"></td>
             </tr>
         </tbody>
     `;
+
+    // I think we can leave the next line out of there and put it into the GameOn after the API data is loaded,
+    // but (a)_I'm not sure about that and (2) I don't want to until I've got the proper text in the table
     gameBoardDiv.appendChild(gameTable);
 };
 
@@ -249,20 +304,21 @@ start();
 const catBtns = document.querySelectorAll('th');
 const gameBtns = document.querySelectorAll('td');
 const newGameButton = document.querySelector('#new-game-button');
+
 for (let button of catBtns) {
     button.addEventListener('click', function(evt) {
-        gameObj.handleClick(evt);
+        GameOn.handleClick(evt);
     })
 }
 for (let button of gameBtns) {
     button.addEventListener('click', function(evt) {
-        gameObj.handeClick(evt);
+        GameOn.handleClick(evt);
     })
 }
 newGameButton.addEventListener('click', function() {
-    gameObj = new Game;
-    gameObj.playGame();
+    GameOn = new Game;
+    GameOn.playGame();
 });
 
-let gameObj = new Game;
-gameObj.playGame();
+let GameOn = new Game;
+GameOn.playGame();

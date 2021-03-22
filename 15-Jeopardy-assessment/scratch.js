@@ -13,3 +13,15 @@ for (let button of gameBtns) {
         console.log(evt.path[0].id);
     })
 }
+
+let errorIndex = 2;
+try {
+    throw new Error(errorIndex);
+} catch (err) {
+    console.log(err);
+    console.log(typeof err);
+    for (let key in err) {
+        console.log(key);
+    }
+    // err is an object, but I can't seem to destructure it
+}
