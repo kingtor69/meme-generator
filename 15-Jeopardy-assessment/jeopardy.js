@@ -67,53 +67,31 @@ class Game {
             if (!clues) {
                 this.replaceFalsyCategory(categories);
             }
-            const objeeDuLoupe = { category };
+            let objeeDuLoupe = { category };
             objeeDuLoupe[c] = clues;
             this.board.push(objeeDuLoupe);
+            c++;
         }
     }
 
     get5Clues(category) {
-        const clues = [];
-        let unusedCluesCount = category.data.clues_count;
-        try {
-
-            if (unusedCluesCount === 5) {
-                let a = 0;
-                for (let clue of category.data.clues) {
-                    if (!(clue.invalid_count < 1)) {
-                        // note: I had that at 2 and found a clue without any question (category 17930, data.clues[3])
-                        // I tried to use the http://jservice.io/api/invalid?id=130153 (the clue ID), but it gave me a 404
-                        // so I lowered the invalid-count threshhold to at least get fewer of these
-                        category = null;
-                        return null;
-                    }
-                    clues.push(clue);
-                };
-                // category.data.clues = clues;
-                // return clues;
-            } else if (unusedCluesCount > 5) {
-                let a = 0;
-                while (a < 5) {
-                    if (!false) {
-                        console.log('you are here (line 99)');
-                        // TODO: get some logic here and a test that isn't !false
-                        a++;
-                    } else if (category.data.clues_count === a) {
-                        category = null;
-                        this.replaceFalsyCategory(category);
-                    } else {
-                        throw new Error("you got in an infinite loop. mah bad.");
-                    }
+        const chosenClues = [];
+        let availableClues = [];
+        for (let clue of category.data.clues) {
+            availableClues.push(clue);
+        }
+        while (chosenClues.length < 5) {
+            if (availableClues.length > 0) {
+                let index = Math.floor(Math.random() * (availableClues.length));
+                if (availableClues[index]) {
+                    chosenClues.push(availableClues[index]);
+                    availableClues.splice(index, 1);
                 }
             } else {
-                category = null;
-                this.replaceFalsyCategory(categories);
+                return null;
             }
-            return clues;
-        } catch (err) {
-            alert("Oops. Looks like I made an infinite loop. Sorry.");
         }
+        return chosenClues;
     }
 
     fillHtmlTable() {
@@ -152,6 +130,7 @@ class Game {
         $('th').removeClass('loaded');
         $('td').removeClass('loaded');
         $('button').removeClass('loaded');
+        $('td').text('loading...');
     }
 
     hideLoadingView() {
