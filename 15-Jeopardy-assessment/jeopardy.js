@@ -20,7 +20,7 @@ class Game {
         const categoryIds = [];
         const offset = Math.floor(Math.random() * 100) * 100;
         try {
-            const herdOfCats = await axios.get(`http://jservice.io/api/categories?count=100&offset=${offset}`);
+            const herdOfCats = await axios.get(`https://jservice.io/api/categories?count=100&offset=${offset}`);
             for (let i = 0; i < 6;) {
                 const catId = herdOfCats.data[Math.floor(Math.random() * 100)].id;
                 if (!categoryIds.includes(catId)) {
@@ -42,7 +42,7 @@ class Game {
         // get a new offset between 1st and 9,999th
         const offset = Math.floor(Math.random() * 10000);
         // get the category at that offset
-        const probyCat = await axios.get(`http://jservice.io/api/categories?offset=${offset}`);
+        const probyCat = await axios.get(`https://jservice.io/api/categories?offset=${offset}`);
         for (let i = 0; i < categories.length; i++) {
             if (probyCat.data.id === categories[i].data.id) {
                 this.replaceFalsyCategory(categories);
@@ -55,7 +55,7 @@ class Game {
     };
 
     async getCategory(catId) {
-        const category = await axios.get(`http://jservice.io/api/category?id=${catId}`);
+        const category = await axios.get(`https://jservice.io/api/category?id=${catId}`);
         return category;
     }
 
