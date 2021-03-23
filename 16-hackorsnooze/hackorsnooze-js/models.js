@@ -83,7 +83,8 @@ class StoryList {
      * Returns the new Story instance
      */
 
-    async addStory(user, newStory) {
+    // the rest of this class written by Tor
+    static async addStory(user, newStory) {
         const postResponse = await axios.post(`${BASE_URL}/stories`, {
             token: user.token,
             story: newStory
@@ -232,4 +233,27 @@ class User {
             return null;
         }
     }
+
+    // the rest of this class written by Tor
+    async favoriteAStory(storyId, areWeFavoriting) {
+        try {
+            let postOrDelete;
+            if (areWeFavoriting) {
+                postOrDelete = "POST";
+            } else {
+                postOrDelete = "DELETE";
+            }
+            const favResponse = await axios({
+                url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+                method: postOrDelete,
+                params: { token: this.loginToken }
+            });
+        } catch (err) {
+            // console.log(favResponse);
+            console.log("D'oh!")
+            console.log(err);
+        }
+    }
 }
+
+// ?token=${this.loginToken}

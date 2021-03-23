@@ -8,7 +8,7 @@
     <title>Tor's HackOrSnooze</title>
     <meta name="title" content="Tor Kingdon">
     <meta name="author" content="Tor Kingdon">
-    <meta name="description" content="Tor's section 1 cumulative project built from his template with links from Jasmine, jQuery & Boostrap; social media metadata from Akib Rahman">
+    <meta name="description" content="Tor's section 1 cumulative project built from his template with links from Jasmine, jQuery & Boostrap; social media metadata from Akib Rahman; most of the markup (except as noted) was provided by Springboard.">
     <!-- Facebook, LinkedIn -->
     <meta property="og:url" content="https://kingtor69.github.io/sb-sect1-projects/index.html" />
     <meta property="og:title" content="" />
@@ -24,8 +24,8 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/png" href="images/tor-headshot-2019-square-32px.jpg">
     <!-- jasmine -->
-    <link rel="shortcut icon" type="image/png" href="lib/jasmine-3.6.0/jasmine_favicon.png">
-    <link rel="stylesheet" type="text/css" href="lib/jasmine-3.6.0/jasmine.css">
+    <!-- <link rel="shortcut icon" type="image/png" href="lib/jasmine-3.6.0/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-3.6.0/jasmine.css"> -->
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
     <!-- Font Awesome -->
@@ -45,6 +45,10 @@
     <nav>
         <div class="navbar-brand">
             <a class="nav-link" href="#" id="nav-all">(King) Tor's HackOrSnooze</a>
+        </div>
+        <!-- logged in nav items written by Tor -->
+        <div class="nav-left hidden" id="nav-for-users">
+            <a class="nav-link" href="#" id="nav-submit-story">submit</a>
         </div>
         <div class="nav-right">
             <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -93,11 +97,31 @@
             <button type="submit">create account</button>
         </form>
     </section>
+    <!-- story-related forms (written by Tor) -->
+    <section class="container story-forms-container">
+        <!-- submit new story form -->
+        <form action="#" id="submit-story-form" class="story-form hidden" method="post">
+            <h4>Submit New Story</h4>
+            <div class="submit-story-input">
+                <label for="submit-story-title">title</label>
+                <input type="text" id="submit-story-title">
+            </div>
+            <div class="submit-story-input">
+                <label for="submit-story-author">author</label>
+                <input type="text" id="submit-story-author">
+            </div>
+            <div class="submit-story-input">
+                <label for="submit-story-url">url</label>
+                <input type="text" id="submit-story-url">
+            </div>
+            <button type="submit">submit</button>
+        </form>
+    </section>
     <!-- scripts: -->
     <!-- jasmine -->
-    <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine.js"></script>
+    <!--     <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine.js"></script>
     <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine-html.js"></script>
-    <script type="text/javascript" src="lib/jasmine-3.6.0/boot.js"></script>
+    <script type="text/javascript" src="lib/jasmine-3.6.0/boot.js"></script> -->
     <!-- boostrap  -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -111,10 +135,8 @@
     <script src="hackorsnooze-js/nav.js"></script>
     <script src="hackorsnooze-js/user.js"></script>
     <script src="hackorsnooze-js/stories.js"></script>
-    <!-- my project-specific JavaScript -->
-    <script src="app.js"></script>
     <!-- project jasmine tests -->
-    <script src="app.test.js"></script>
+    <!-- <script src="app.test.js"></script> -->
 </body>
 
 </html>
