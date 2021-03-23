@@ -254,6 +254,12 @@ class User {
             console.log(err);
         }
     }
+
+    isStoryFavorited(storyId) {
+        for (let story of this.favorites) {
+            if (story.storyId === storyId) return true;
+        }
+    }
 }
 
 // ?token=${this.loginToken}

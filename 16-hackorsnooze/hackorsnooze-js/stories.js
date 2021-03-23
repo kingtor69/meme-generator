@@ -20,9 +20,15 @@ async function getAndShowStoriesOnStart() {
  */
 
 function generateStoryMarkup(story) {
-    // console.debug("generateStoryMarkup", story);
     // favorite checkbox added by Tor
     const hostName = story.getHostName();
+    const storyId = story.storyId;
+    let favClass = "far";
+    if (currentUser) {
+        if (currentUser.isStoryFavorited(storyId)) {
+            favClass = "fas"
+        };
+    };
     return $(`
       <li id="${story.storyId}">
         <a href="${story.url}" target="a_blank" class="story-link">
@@ -31,14 +37,11 @@ function generateStoryMarkup(story) {
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <br>
-        <label for="fav-${story.storyId}">favorite <i class="far fa-heart"></i> &nbsp;</label>
+        <label for="fav-${story.storyId}">favorite <i id="heart-${story.storyId}" class="${favClass} fa-heart"></i> &nbsp;</label>
         <input type="checkbox" class="story-favorite" id="fav-${story.storyId}">
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
-    // TODO: find click handler and change label to use the 
-    // font awesome for checked heart: <i class="fas fa-heart"></i>
-    // Oh, wait. I gotta make the click handler. :D
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */

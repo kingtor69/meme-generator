@@ -109,7 +109,16 @@ function saveUserCredentialsInLocalStorage() {
 
 function updateUIOnUserLogin() {
     console.debug("updateUIOnUserLogin");
-
+    $allStoriesList.hide();
+    const $storiesLis = $allStoriesList.children();
+    for (let storyLi of $storiesLis) {
+        if (currentUser.isStoryFavorited(storyLi.id)) {
+            console.log(`got a favorite`);
+            const $favIcon = $(`#heart-${storyLi.id}`);
+            $favIcon.addClass('fas');
+            $favIcon.removeClass('far');
+        };
+    } // console.log($allStoriesList);
     $allStoriesList.show();
     $navForUsers.show();
 
@@ -118,15 +127,14 @@ function updateUIOnUserLogin() {
 
 // rest of code by Tor:
 function handleFavoriteClicks(evt) {
-    if (currentUser) {
-        console.log($(`#${evt.target.id}`).prev());
-        const favoritedLi = $(`#${evt.target.id}`).prev();
-        $(`#${favoritedLi.id}:nthChild(n2)`).toggleClass(["fas fa-heart", "far fa-heart"]);
-    } else {
+    if (!currentUser) {
         console.debug('login or signup to favorite');
         hidePageComponents();
         $loginForm.show();
         $signupForm.show();
     }
-    currentUser.favoriteAStory(evt.target.parentNode.id, !!evt.target.checked);
+    const storyId = evt.target.parentNode.id
+    currentUser.favoriteAStory(storyId, !!evt.target.checked);
+    $(`#heart-${storyId}`).toggleClass("fas fa-heart");
+    $(`#heart-${storyId}`).toggleClass("far fa-heart");
 }
