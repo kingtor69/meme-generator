@@ -17,7 +17,7 @@ $body.on("click", "#nav-all", navAllStories);
 /** Show login/signup on click on "login" */
 
 function navLoginClick(evt) {
-    console.debug("navLoginClick", evt);
+    console.debug("navLoginClick");
     hidePageComponents();
     $loginForm.show();
     $signupForm.show();

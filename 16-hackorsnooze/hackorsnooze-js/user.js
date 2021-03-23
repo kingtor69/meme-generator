@@ -113,9 +113,7 @@ function updateUIOnUserLogin() {
     const $storiesLis = $allStoriesList.children();
     for (let storyLi of $storiesLis) {
         if (currentUser.isStoryFavorited(storyLi.id)) {
-            const $favIcon = $(`#heart-${storyLi.id}`);
-            $favIcon.addClass('fas');
-            $favIcon.removeClass('far');
+            markFavorite(storyLi.id);
         };
     }
     $allStoriesList.show();
@@ -136,4 +134,10 @@ function handleFavoriteClicks(evt) {
     currentUser.favoriteAStory(storyId, !!evt.target.checked);
     $(`#heart-${storyId}`).toggleClass("fas fa-heart");
     $(`#heart-${storyId}`).toggleClass("far fa-heart");
+}
+
+function markFavorite(storyId) {
+    const $favIcon = $(`#heart-${storyId}`);
+    $favIcon.addClass('fas');
+    $favIcon.removeClass('far');
 }

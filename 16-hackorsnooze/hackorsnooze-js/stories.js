@@ -55,6 +55,9 @@ function putStoriesOnPage() {
     for (let story of storyList.stories) {
         const $story = generateStoryMarkup(story);
         $allStoriesList.append($story);
+        if (currentUser.isStoryFavorited(story.id)) {
+            markFavorite(story.storyId);
+        }
     }
     $inputStoryFavorite = $('.story-favorite');
     $inputStoryFavorite.on('change', handleFavoriteClicks);
@@ -64,8 +67,8 @@ function putStoriesOnPage() {
 
 // all following written by Tor
 
-function submitNewStory(evt) {
-    console.debug("submitNewStory", evt);
+async function submitNewStory(evt) {
+    console.debug("submitNewStory");
     evt.preventDefault();
 
     const title = $("#submit-story-title").val();
@@ -76,10 +79,11 @@ function submitNewStory(evt) {
         token: localStorage.getItem("token")
     };
 
-    StoryList.addStory(user, { title, author, url });
+    storyList.stories.unshift(await StoryList.addStory(user, { title, author, url }));
 
     $submitStoryForm.trigger("reset");
     $submitStoryForm.hide();
+    putStoriesOnPage();
     $allStoriesList.show();
 }
 
