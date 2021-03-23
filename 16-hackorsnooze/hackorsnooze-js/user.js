@@ -113,12 +113,11 @@ function updateUIOnUserLogin() {
     const $storiesLis = $allStoriesList.children();
     for (let storyLi of $storiesLis) {
         if (currentUser.isStoryFavorited(storyLi.id)) {
-            console.log(`got a favorite`);
             const $favIcon = $(`#heart-${storyLi.id}`);
             $favIcon.addClass('fas');
             $favIcon.removeClass('far');
         };
-    } // console.log($allStoriesList);
+    }
     $allStoriesList.show();
     $navForUsers.show();
 

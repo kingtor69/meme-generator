@@ -86,8 +86,8 @@ class StoryList {
     // the rest of this class written by Tor
     static async addStory(user, newStory) {
         const postResponse = await axios.post(`${BASE_URL}/stories`, {
-            token: user.token,
-            story: newStory
+            "token": user.token,
+            "story": newStory
         });
         return new Story({
             storyId: postResponse.data.story.storyId,
@@ -96,6 +96,20 @@ class StoryList {
             url: postResponse.data.story.url,
             createdAt: postResponse.data.story.createdAt
         });
+    }
+
+    static async deleteAStory(storyId) {
+        try {
+            const deleteResponse = await axios({
+                url: `${BASE_URL}/stories/`,
+                method: "DELETE",
+                token: currentUser.loginToken,
+                storyId
+            });
+        } catch (err) {
+            console.log("D'oh!");
+            console.log(err);
+        }
     }
 }
 
@@ -250,7 +264,6 @@ class User {
             });
         } catch (err) {
             // console.log(favResponse);
-            console.log("D'oh!")
             console.log(err);
         }
     }
@@ -260,6 +273,7 @@ class User {
             if (story.storyId === storyId) return true;
         }
     }
+
 }
 
 // ?token=${this.loginToken}
