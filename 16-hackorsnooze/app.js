@@ -12,6 +12,8 @@ const kingTorUser = {
         "username": "kingtor"
     }
 };
+
+
 const hackOrSnoozeApiUrlBase = "https://hack-or-snooze-v3.herokuapp.com"
 let hearKittyIsTheStory = {
     author: "Tor at Hear Kitty Studios",
@@ -29,4 +31,4 @@ async function createNewStory(author, title, url) {
 // or maybe the "story instance" is the return value...? 
 // YES, it's some elements from the response
 
-// forgot kingtor's password, so I made kingtor69 (same as GitHub) with password saved in Chrome
+// forgot kingtor's password, so I made kingtor69 (same as GitHub) with password saved in Chrome. 'cept (derp) that password saved in Chrome is to localhost 8080. Har. h4ck0fsno0Z3r0ckS
