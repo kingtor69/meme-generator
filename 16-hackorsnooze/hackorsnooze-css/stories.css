@@ -38,7 +38,8 @@
     display: inline-block;
 }
 
-input[type=checkbox].story-favorite {
+input[type=checkbox].story-favorite,
+input[type=checkbox].story-delete {
     display: none;
 }
 

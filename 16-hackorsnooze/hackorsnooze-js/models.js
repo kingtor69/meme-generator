@@ -98,7 +98,12 @@ class StoryList {
         });
     };
 
-    static async deleteStory(storyId) {}
+    static async deleteStory(storyId) {
+        // await axios.delete(`${BASE_URL}/stories/${storyId}?token=${currentUser.loginToken}`);
+        await axios.delete(`${BASE_URL}/stories/${storyId}`, {
+            token: currentUser.loginToken
+        });
+    }
 }
 
 /*
