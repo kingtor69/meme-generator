@@ -19,7 +19,6 @@ const $navSubmitStory = $("#nav-submit-story");
 
 const $navForUsers = $("#nav-for-users");
 
-let $inputStoryFavorite = $('input.story-favorite');
 
 
 /** To make it easier for individual components to show just themselves, this
@@ -32,7 +31,8 @@ function hidePageComponents() {
         $allStoriesList,
         $loginForm,
         $signupForm,
-        $submitStoryForm
+        $submitStoryForm,
+        $navSubmitStory
     ];
     components.forEach(c => c.hide());
 }

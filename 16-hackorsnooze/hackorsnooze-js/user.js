@@ -130,10 +130,15 @@ function handleFavoriteClicks(evt) {
         $loginForm.show();
         $signupForm.show();
     }
-    const storyId = evt.target.parentNode.id
+    const storyId = evt.target.parentNode.id;
     currentUser.favoriteAStory(storyId, !!evt.target.checked);
-    $(`#heart-${storyId}`).toggleClass("fas fa-heart");
-    $(`#heart-${storyId}`).toggleClass("far fa-heart");
+    if (!!evt.target.checked) {
+        $(`#heart-${storyId}`).addClass("fas");
+        $(`#heart-${storyId}`).removeClass("far");
+    } else {
+        $(`#heart-${storyId}`).removeClass("fas");
+        $(`#heart-${storyId}`).addClass("far");
+    }
 }
 
 function markFavorite(storyId) {

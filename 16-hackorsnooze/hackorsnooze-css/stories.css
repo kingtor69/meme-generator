@@ -43,6 +43,10 @@ input[type=checkbox].story-delete {
     display: none;
 }
 
+label.small {
+    font-size: 0.6rem;
+}
+
 /*.story-user {
     display: block;
 }*/

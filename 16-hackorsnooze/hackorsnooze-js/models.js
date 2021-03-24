@@ -84,6 +84,11 @@ class StoryList {
      */
 
     // the rest of this class written by Tor
+    // at one point, addStory was working and deleteStory was working with the query IN the URL
+    // with both of these static, but I wonder if they should be in the User class and be NOT static
+    // or, at least, I should add some logic to make sure someone is logged in
+    // let's see if I can make this work any better
+
     static async addStory(user, newStory) {
         const postResponse = await axios.post(`${BASE_URL}/stories`, {
             token: user.token,

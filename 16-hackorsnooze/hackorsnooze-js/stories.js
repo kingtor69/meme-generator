@@ -24,17 +24,15 @@ function generateStoryMarkup(story) {
     const hostName = story.getHostName();
     const storyId = story.storyId;
     let favClass = "far";
+    let favoriteChecked = false;
     if (currentUser) {
         if (currentUser.isStoryFavorited(storyId)) {
-            favClass = "fas"
+            favClass = "fas";
+            favoriteChecked = true;
         };
     };
-    // console.log(story);
-    // console.log(currentUser);
-    // debugger;
-    try {
-        if (currentUser.username === story.username) {
-            return $(`
+    if (!!currentUser && currentUser.username === story.username) {
+        return $(`
                 <li id="${story.storyId}">
                   <a href="${story.url}" target="a_blank" class="story-link">
                     ${story.title}
@@ -42,19 +40,14 @@ function generateStoryMarkup(story) {
                   <small class="story-hostname">(${hostName})</small>
                   <small class="story-author">by ${story.author}</small>
                   <br>
-                  <label for="fav-${story.storyId}">favorite <i id="heart-${story.storyId}" class="${favClass} fa-heart"></i> &nbsp;</label>
-                  <input type="checkbox" class="story-favorite" id="fav-${story.storyId}">
+                  <label class="small" for="fav-${story.storyId}">favorite <i id="heart-${story.storyId}" class="${favClass} fa-heart"></i> &nbsp;</label>
+                  <input type="checkbox" class="story-favorite" id="fav-${story.storyId}" checked="${favoriteChecked}">
                   <small class="story-user">posted by ${story.username}</small>
-                  <label for="delete-${story.storyId}">&nbsp; delete <i class="fas fa-trash-alt"></i></label>
+                  <label class="small" for="delete-${story.storyId}">&nbsp; delete <i class="fas fa-trash-alt"></i></label>
                   <input type="checkbox" class="story-delete" id="delete-${story.storyId}">
                 </li>
               `);
-        };
-        // <button class="btn btn-warning btn-sm" id="delete-${story.storyId}">delete</button>
-    } catch (err) {
-        console.log("dagnabbit");
-        console.log(err);
-    }
+    };
     return $(`
       <li id="${story.storyId}">
         <a href="${story.url}" target="a_blank" class="story-link">
@@ -63,8 +56,8 @@ function generateStoryMarkup(story) {
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <br>
-        <label for="fav-${story.storyId}">favorite <i id="heart-${story.storyId}" class="${favClass} fa-heart"></i> &nbsp;</label>
-        <input type="checkbox" class="story-favorite" id="fav-${story.storyId}">
+        <label class="small" for="fav-${story.storyId}">favorite <i id="heart-${story.storyId}" class="${favClass} fa-heart"></i> &nbsp;</label>
+        <input type="checkbox" class="story-favorite" id="fav-${story.storyId}" checked="${favoriteChecked}">
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
@@ -81,12 +74,14 @@ function putStoriesOnPage() {
     for (let story of storyList.stories) {
         const $story = generateStoryMarkup(story);
         $allStoriesList.append($story);
-        if (currentUser.isStoryFavorited(story.id)) {
+        if (!!currentUser && currentUser.isStoryFavorited(story.id)) {
             markFavorite(story.storyId);
         }
     }
-    $inputStoryFavorite = $('.story-favorite');
+    const $inputStoryFavorite = $('.story-favorite');
     $inputStoryFavorite.on('change', handleFavoriteClicks);
+    const $inputStoryDelete = $('.story-delete');
+    $inputStoryDelete.on('change', deleteStory);
 
     $allStoriesList.show();
 }
@@ -119,11 +114,11 @@ async function deleteStory(evt) {
     evt.preventDefault();
     console.debug("deleteStory", evt);
 
-    const storyId = evt.target.parentNode.id
+    const storyId = evt.target.parentNode.id;
+    console.log(storyId);
+    console.log(currentUser.loginToken);
     StoryList.deleteStory(storyId);
 
     putStoriesOnPage();
     $allStoriesList.show();
 }
-
-$deleteStoryForm.on("submit", deleteStory);
