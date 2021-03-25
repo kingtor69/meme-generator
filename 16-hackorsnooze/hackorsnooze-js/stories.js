@@ -119,7 +119,7 @@ $submitStoryForm.on("submit", submitNewStory);
 
 async function deleteStory(evt) {
     evt.preventDefault();
-    console.debug("deleteStory", evt);
+    console.debug("deleteStory");
 
     const storyId = evt.target.parentNode.id;
     StoryList.deleteStory(storyId);

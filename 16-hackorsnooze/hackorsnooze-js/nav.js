@@ -27,7 +27,7 @@ $navLogin.on("click", navLoginClick);
 
 // navSubmitStory written by Tor
 function navSubmitStory(evt) {
-    console.debug("navSubmitStory", evt);
+    console.debug("navSubmitStory");
     hidePageComponents();
     $submitStoryForm.show();
 }
