@@ -99,15 +99,17 @@ class StoryList {
             title: postResponse.data.story.title,
             author: postResponse.data.story.author,
             url: postResponse.data.story.url,
-            createdAt: postResponse.data.story.createdAt
+            createdAt: postResponse.data.story.createdAt,
+            username: postResponse.data.story.username
         });
     };
 
     static async deleteStory(storyId) {
-        // await axios.delete(`${BASE_URL}/stories/${storyId}?token=${currentUser.loginToken}`);
-        await axios.delete(`${BASE_URL}/stories/${storyId}`, {
-            token: currentUser.loginToken
-        });
+        await axios.delete(`${BASE_URL}/stories/${storyId}?token=${currentUser.loginToken}`);
+        // await axios.delete(`${BASE_URL}/stories/${storyId}`, {
+        //     token: currentUser.loginToken
+        // });
+        return;
     }
 }
 
@@ -262,8 +264,7 @@ class User {
             });
         } catch (err) {
             // console.log(favResponse);
-            console.log("D'oh!")
-            console.log(err);
+            console.error("D'oh!", err);
         }
     }
 

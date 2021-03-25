@@ -63,6 +63,13 @@ function generateStoryMarkup(story) {
     `);
 }
 
+function removeStoryFromList(deletedId) {
+    const tempArray = storyList.stories.filter(function(val, ind, arr) {
+        return storyList.stories[ind].storyId !== deletedId;
+    });
+    storyList.stories = tempArray;
+}
+
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
@@ -115,10 +122,11 @@ async function deleteStory(evt) {
     console.debug("deleteStory", evt);
 
     const storyId = evt.target.parentNode.id;
-    console.log(storyId);
-    console.log(currentUser.loginToken);
     StoryList.deleteStory(storyId);
 
+    $allStoriesList.hide();
+    removeStoryFromList(storyId);
     putStoriesOnPage();
     $allStoriesList.show();
+    $navSubmitStory.show();
 }

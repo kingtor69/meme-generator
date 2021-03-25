@@ -26,7 +26,6 @@ async function createNewStory(author, title, url) {
         token: kingTorUser.token,
         story: { author, title, url }
     });
-    console.log(postResponse);
 }
 // or maybe the "story instance" is the return value...? 
 // YES, it's some elements from the response
